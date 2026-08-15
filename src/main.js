@@ -53,7 +53,7 @@ function createNewElement(key, value) {
 
 
 
-    newClonedDivEle.addEventListener('click', (e) => {
+    newClonedDivEle.addEventListener('click', async (e) => {
       const previousInnerText = e.target.innerText;
 
       if (arrayForAi.length >= 2) {
@@ -64,14 +64,29 @@ function createNewElement(key, value) {
 
       e.target.innerText = selectedInnerText;
       arrayForAi.push(selectedInnerText);
+      console.log(arrayForAi)
+
 
 
       if (arrayForAi.length === 2) {
-        // TODO: send this to ai
-      } else {
-        // Todo
+
+        const res = await generateOutput(arrayForAi);
+
+        console.log(res)
+
+        /**
+         * @type {{success: boolean, output: string}}
+        */
+        const data = JSON.parse(res);
+
+        if (data.success) {
+          defaultCardMap.set(data.output, data.output);
+          renderNewCards();
+
+        }
       }
 
+      arrayForAi = [];
 
     })
 
