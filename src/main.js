@@ -1,5 +1,7 @@
 // Dom selected elements
 
+import { generateOutput } from "./ai";
+
 const domElements = {
   playground: document.getElementById("playground"),
   newCardsWrapper: document.getElementById("new-cards")
@@ -12,13 +14,22 @@ const styles = {
 }
 
 // logic
-
+let playGroundElementsArray = [];
+let arrayForAi = [];
+let cloneCounter = 0;
 const defaultCardMap = new Map([
   ["🔥 Fire", "🔥 Fire"],
   ["🌱 Earth", "🌱 Earth"],
   ["💦 Water", "💦 Water"],
   ["💨 Air", "💨 Air"],
 ])
+
+/**
+ * @param {HTMLDivElement} element 
+ */
+function renderPlaygroundElements(element) {
+  domElements.playground.appendChild(element);
+}
 
 // console.log(defaultCardMap);
 
@@ -33,7 +44,55 @@ function createNewElement(key, value) {
   divElement.id = key;
 
   divElement.addEventListener("click", () => {
+    const newClonedDivEle = document.createElement("div");
+    cloneCounter++;
+    newClonedDivEle.textContent = value;
+    newClonedDivEle.className = styles.newElementCard;
+    newClonedDivEle.id = `clone-${cloneCounter}`;
 
+
+
+
+    newClonedDivEle.addEventListener('click', (e) => {
+      const previousInnerText = e.target.innerText;
+
+      if (arrayForAi.length >= 2) {
+        return alert("Only 2 elements can be added at once");
+      }
+
+      const selectedInnerText = `✅ ${previousInnerText}`;
+
+      e.target.innerText = selectedInnerText;
+      arrayForAi.push(selectedInnerText);
+
+
+      if (arrayForAi.length === 2) {
+        // TODO: send this to ai
+      } else {
+        // Todo
+      }
+
+
+    })
+
+    newClonedDivEle.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      /**
+       * @type {string} previousInnerText
+       */
+      const previousInnerText = e.target.innerText;
+
+      if (previousInnerText.indexOf("✅") === -1) return;
+
+      const nonSelectedInnerText = previousInnerText.split("✅")[1].trim();
+
+
+
+      e.target.innerText = nonSelectedInnerText;
+
+    })
+
+    renderPlaygroundElements(newClonedDivEle);
   })
 
 
